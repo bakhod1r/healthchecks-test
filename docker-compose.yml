@@ -18,7 +18,7 @@ services:
   backend:
     build: .
     ports:
-      - "8088:8080"
+      - "7071:8080"
 
 volumes:
   hc-data:
