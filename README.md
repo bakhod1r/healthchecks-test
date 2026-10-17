@@ -2,7 +2,7 @@
 
 Minimal playground for testing [healthchecks.io](https://healthchecks.io): a tiny Go backend and a bash cronjob that reports every run to Healthchecks.
 
-- `cmd/server` — backend, `GET /health` returns `{"status":"ok"}`.
+- `main.go` — backend, `GET /health` returns `{"status":"ok"}`.
 - `cron/hc-run.sh <ping-url> <command...>` — wrapper: pings `/start`, runs the command, then pings `/<exit-code>` (`/0` = success) with the last 10 KB of output as the body.
 - `cron/jobs/check-backend.sh` — the job: `curl -f $BACKEND_URL/health`.
 - `cron/crontab` — runs the job every minute (alpine `crond` in the `cron` container).
@@ -32,6 +32,6 @@ Without Docker, add to your own crontab:
 ## Test
 
 ```sh
-go test ./...
+go vet ./...
 bash cron/test/hc-run_test.sh
 ```
