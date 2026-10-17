@@ -1,10 +1,11 @@
 # healthchecks-test
 
-Minimal playground for testing [healthchecks.io](https://healthchecks.io): a tiny Go backend and one cronjob that reports every run to Healthchecks.
+Minimal playground for testing [healthchecks.io](https://healthchecks.io): a tiny Go backend and a bash cronjob that reports every run to Healthchecks.
 
 - `cmd/server` — backend, `GET /health` returns `{"status":"ok"}`.
-- `cmd/cron` — every `CRON_INTERVAL` calls `BACKEND_URL/health`, sends `/start` before the run, then success or `/fail` (with error text) after.
-- `internal/monitoring` — `domain` (check + signals), `application` (`RunMonitored`), `infrastructure` (HTTP pinger).
+- `cron/hc-run.sh <ping-url> <command...>` — wrapper: pings `/start`, runs the command, then pings `/<exit-code>` (`/0` = success) with the last 10 KB of output as the body.
+- `cron/jobs/check-backend.sh` — the job: `curl -f $BACKEND_URL/health`.
+- `cron/crontab` — runs the job every minute (alpine `crond` in the `cron` container).
 
 ## Run locally
 
@@ -20,21 +21,17 @@ docker compose up -d healthchecks backend
 HC_PING_URL=http://healthchecks:8000/ping/<uuid> docker compose up -d cron
 ```
 
-The check turns green. Run `docker compose stop backend` and the next run sends `/fail`, so the check goes down.
+The check turns green. Run `docker compose stop backend`: the next run pings `/7` (curl connect error), so the check goes down.
 
-With hosted healthchecks.io, use `HC_PING_URL=https://hc-ping.com/<uuid>` and run `go run ./cmd/cron`.
+Without Docker, add to your own crontab:
 
-## Env
-
-| Var | Default |
-|---|---|
-| `HC_PING_URL` | required |
-| `BACKEND_URL` | `http://localhost:8080` |
-| `CRON_INTERVAL` | `1m` |
-| `ADDR` (server) | `:8080` |
+```cron
+* * * * * HC_PING_URL=https://hc-ping.com/<uuid> /path/to/cron/hc-run.sh "$HC_PING_URL" /path/to/cron/jobs/check-backend.sh
+```
 
 ## Test
 
 ```sh
 go test ./...
+bash cron/test/hc-run_test.sh
 ```

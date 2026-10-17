@@ -17,17 +17,14 @@ services:
 
   backend:
     build: .
-    command: ["/app/server"]
     ports:
       - "8080:8080"
 
   cron:
-    build: .
-    command: ["/app/cron"]
+    build: ./cron
     environment:
       HC_PING_URL: ${HC_PING_URL:?set HC_PING_URL to the check ping URL}
       BACKEND_URL: http://backend:8080
-      CRON_INTERVAL: ${CRON_INTERVAL:-1m}
     depends_on: [backend, healthchecks]
 
 volumes:
