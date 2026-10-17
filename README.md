@@ -25,7 +25,7 @@ Then `crontab -e`:
 * * * * * HC_PING_URL=http://localhost:8000/ping/<uuid> /path/to/healthcheck.sh >>/tmp/healthcheck.log 2>&1
 ```
 
-Stop the backend (`docker compose stop backend`) and the check goes down.
+Remove the cron entry and the check goes down after period + grace.
 
 | Env | Default |
 |---|---|
