@@ -5,13 +5,13 @@ services:
       DB: sqlite
       DB_NAME: /data/hc.sqlite
       SECRET_KEY: secret-key
-      SITE_ROOT: http://localhost:8000
-      PING_ENDPOINT: http://localhost:8000/ping/
+      SITE_ROOT: http://localhost:7077
+      PING_ENDPOINT: http://localhost:7077/ping/
       REGISTRATION_OPEN: "True"
       DEBUG: "False"
       ALLOWED_HOSTS: "*"
     ports:
-      - "8000:8000"
+      - "7077:8000"
     volumes:
       - hc-data:/data
 
