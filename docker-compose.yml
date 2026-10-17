@@ -4,24 +4,26 @@ services:
     environment:
       DB: sqlite
       DB_NAME: /data/hc.sqlite
-      SECRET_KEY: secret-key
-      SITE_ROOT: http://localhost:7077
-      PING_ENDPOINT: http://localhost:7077/ping/
+      SECRET_KEY: ${HC_SECRET_KEY:?set HC_SECRET_KEY in .env}
+      SITE_ROOT: http://localhost:${HC_PORT:-7077}
+      PING_ENDPOINT: http://localhost:${HC_PORT:-7077}/ping/
       REGISTRATION_OPEN: "True"
       DEBUG: "False"
       ALLOWED_HOSTS: "*"
     ports:
-      - "7077:8000"
+      - "${HC_PORT:-7077}:8000"
     volumes:
       - hc-data:/data
 
   backend:
     build: .
     environment:
-      HC_PING_URL: ${HC_PING_URL:-}
-      HC_PING_INTERVAL: 1m
+      # inside the compose network healthchecks is reachable by service name
+      HC_PING_URL: ${HC_UUID:+http://healthchecks:8000/ping/${HC_UUID}}
+      HC_PING_INTERVAL: ${HC_PING_INTERVAL:-1m}
     ports:
-      - "7071:8080"
+      - "${BACKEND_PORT:-7071}:8080"
+    depends_on: [healthchecks]
 
 volumes:
   hc-data:

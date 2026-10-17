@@ -8,6 +8,7 @@ Minimal playground for testing [healthchecks.io](https://healthchecks.io).
 ## Run
 
 ```sh
+cp .env.example .env   # set HC_SECRET_KEY, HC_UUID
 docker compose up -d   # healthchecks on :7077, backend on :7071
 ```
 
@@ -16,13 +17,13 @@ Open http://localhost:7077, sign up, add a check (period 1 min, grace 1 min), co
 Test once by hand:
 
 ```sh
-HC_PING_URL=http://localhost:7077/ping/<uuid> ./healthcheck.sh
+./healthcheck.sh   # reads HC_UUID from .env
 ```
 
 Then `crontab -e`:
 
 ```cron
-* * * * * HC_PING_URL=http://localhost:7077/ping/<uuid> /path/to/healthcheck.sh >>/tmp/healthcheck.log 2>&1
+* * * * * /path/to/healthcheck.sh >>/tmp/healthcheck.log 2>&1
 ```
 
 Remove the cron entry and the check goes down after period + grace.
