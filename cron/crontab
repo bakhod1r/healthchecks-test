@@ -1,3 +1,0 @@
-# Every minute: check backend health and report to healthchecks.
-# env.sh is written at container start (busybox crond does not pass env to jobs).
-* * * * * . /cron/env.sh; /cron/hc-run.sh "$HC_PING_URL" /cron/jobs/check-backend.sh >/proc/1/fd/1 2>/proc/1/fd/2

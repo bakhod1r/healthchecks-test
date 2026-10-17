@@ -6,7 +6,7 @@ services:
       DB_NAME: /data/hc.sqlite
       SECRET_KEY: local-dev-only-change-me
       SITE_ROOT: http://localhost:8000
-      PING_ENDPOINT: http://healthchecks:8000/ping/
+      PING_ENDPOINT: http://localhost:8000/ping/
       REGISTRATION_OPEN: "True"
       DEBUG: "False"
       ALLOWED_HOSTS: "*"
@@ -19,13 +19,6 @@ services:
     build: .
     ports:
       - "8080:8080"
-
-  cron:
-    build: ./cron
-    environment:
-      HC_PING_URL: ${HC_PING_URL:?set HC_PING_URL to the check ping URL}
-      BACKEND_URL: http://backend:8080
-    depends_on: [backend, healthchecks]
 
 volumes:
   hc-data:
