@@ -34,15 +34,16 @@ func main() {
 // heartbeat pings healthchecks while the process is alive; if it dies, the check goes down.
 func heartbeat(url string, interval time.Duration) {
 	client := &http.Client{Timeout: 10 * time.Second}
+	log.Printf("heartbeat: pinging %s every %s", url, interval)
 	for {
+		log.Printf("heartbeat: sending ping")
+		start := time.Now()
 		resp, err := client.Get(url)
 		if err != nil {
-			log.Printf("heartbeat: %v", err)
+			log.Printf("heartbeat: failed: %v", err)
 		} else {
 			resp.Body.Close()
-			if resp.StatusCode != http.StatusOK {
-				log.Printf("heartbeat: status %d", resp.StatusCode)
-			}
+			log.Printf("heartbeat: sent, status %d in %s", resp.StatusCode, time.Since(start).Round(time.Millisecond))
 		}
 		time.Sleep(interval)
 	}
