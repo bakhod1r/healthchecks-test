@@ -3,7 +3,7 @@
 Minimal playground for testing [healthchecks.io](https://healthchecks.io).
 
 - `main.go` — backend, `GET /health` returns `{"status":"ok"}`.
-- `healthcheck.sh` — cron script: pings `/start`, checks `$BACKEND_URL/health`, then pings `/<exit-code>` (`/0` = success) with the output as body.
+- `healthcheck.sh` — cron script: sends one ping to `$HC_PING_URL`.
 
 ## Run
 
@@ -30,6 +30,5 @@ Stop the backend (`docker compose stop backend`) and the check goes down.
 | Env | Default |
 |---|---|
 | `HC_PING_URL` | required |
-| `BACKEND_URL` | `http://localhost:8080` |
 
 macOS: cron cannot read `~/Desktop` without Full Disk Access for `/usr/sbin/cron`; keep the script elsewhere or grant access.
