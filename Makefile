@@ -2,7 +2,7 @@ EMAIL ?= phapp0224mb@gmail.com
 
 .PHONY: up down restart logs superuser ping lint
 
-up: ## start healthchecks (:7077) and backend (:8080)
+up: ## start healthchecks (:7077) and backend (:7071)
 	docker compose up -d --force-recreate
 
 down:

@@ -17,6 +17,9 @@ services:
 
   backend:
     build: .
+    environment:
+      HC_PING_URL: ${HC_PING_URL:-}
+      HC_PING_INTERVAL: 1m
     ports:
       - "7071:8080"
 
